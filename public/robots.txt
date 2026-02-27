@@ -1,0 +1,17 @@
+# Robots.txt for JS Ejercicios AI
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://js-exercises-eta.vercel.app/sitemap.xml
+
+# Crawl-delay (optional, be nice to servers)
+Crawl-delay: 1
+
+# Disallow admin/private areas (if any)
+Disallow: /api/
+
+# Allow Googlebot
+User-agent: Googlebot
+Allow: /

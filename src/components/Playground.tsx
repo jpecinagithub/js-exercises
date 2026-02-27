@@ -64,38 +64,42 @@ export function Playground({
   }, [isResizing]);
 
   return (
-    <main className="playground">
-      <div className="playground-header">
-        <div className="difficulty-selector">
-          <span>Dificultad:</span>
-          {(['easy', 'medium', 'hard'] as Difficulty[]).map((d) => (
-            <button
-              key={d}
-              className={`difficulty-btn ${difficulty === d ? 'active' : ''}`}
-              onClick={() => onDifficultyChange(d)}
-            >
-              {d === 'easy' ? 'Facil' : d === 'medium' ? 'Medio' : 'Dificil'}
-            </button>
-          ))}
-        </div>
+    <main className="playground" role="main" aria-label="Area de ejercicios">
+      <header className="playground-header">
+        <section className="difficulty-selector" aria-label="Selector de dificultad">
+          <span id="difficulty-label">Dificultad:</span>
+          <div role="group" aria-labelledby="difficulty-label">
+            {(['easy', 'medium', 'hard'] as Difficulty[]).map((d) => (
+              <button
+                key={d}
+                className={`difficulty-btn ${difficulty === d ? 'active' : ''}`}
+                onClick={() => onDifficultyChange(d)}
+                aria-pressed={difficulty === d}
+              >
+                {d === 'easy' ? 'Facil' : d === 'medium' ? 'Medio' : 'Dificil'}
+              </button>
+            ))}
+          </div>
+        </section>
         <div className="header-actions">
-          <button className="new-exercise-btn" onClick={onNewExercise} disabled={loading}>
+          <button className="new-exercise-btn" onClick={onNewExercise} disabled={loading} aria-label="Generar nuevo ejercicio">
             Nuevo Ejercicio
           </button>
           <button 
             className="check-btn" 
             onClick={onCheckSolution}
             disabled={loading || !userCode.trim()}
+            aria-label="Enviar solucion para verificar"
           >
             {loading ? 'Verificando...' : 'Resolver'}
           </button>
         </div>
-      </div>
+      </header>
 
-      {error && <div className="error-message">{error}</div>}
+      {error && <div className="error-message" role="alert">{error}</div>}
 
       {loading && !exercise && (
-        <div className="loading-state">
+        <div className="loading-state" aria-live="polite">
           <div className="spinner"></div>
           <p>Generando ejercicio...</p>
         </div>
@@ -103,37 +107,38 @@ export function Playground({
 
       {exercise && (
         <div className="playground-content">
-          <div className="exercise-content">
+          <article className="exercise-content" aria-label="Ejercicio actual">
             <h2>{exercise.title}</h2>
-            <div className="statement">
+            <section className="statement">
               <h3>Enunciado del Problema</h3>
               <p>{exercise.statement}</p>
-            </div>
+            </section>
             
-            <div className="requirements">
+            <section className="requirements">
               <h3>Requisitos</h3>
               <ul>
                 {exercise.requirements.map((req, i) => (
                   <li key={i}>{req}</li>
                 ))}
               </ul>
-            </div>
+            </section>
 
-            <div className="examples">
+            <section className="examples" aria-label="Ejemplos del ejercicio">
               <h3>Ejemplos</h3>
               {exercise.examples.map((ex, i) => (
-                <div key={i} className="example">
+                <figure key={i} className="example">
+                  <figcaption>Ejemplo {i + 1}</figcaption>
                   <div><strong>Entrada:</strong> <code>{ex.input}</code></div>
                   <div><strong>Salida:</strong> <code>{ex.output}</code></div>
                   <div><strong>Explicacion:</strong> {ex.explanation}</div>
-                </div>
+                </figure>
               ))}
-            </div>
-          </div>
+            </section>
+          </article>
 
           <div className="resize-handle" onMouseDown={handleMouseDown} />
 
-          <div className="editor-section" style={{ height: editorHeight }}>
+          <section className="editor-section" style={{ height: editorHeight }} aria-label="Editor de codigo">
             <h3>Tu Solucion</h3>
             <CodeEditor
               value={userCode}
@@ -141,7 +146,7 @@ export function Playground({
               placeholder="Escribe tu solucion en JavaScript aqui..."
               height={editorHeight - 40}
             />
-          </div>
+          </section>
         </div>
       )}
 
