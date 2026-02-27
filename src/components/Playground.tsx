@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Exercise, Difficulty } from '../types';
+import { CodeEditor } from './CodeEditor';
 
 interface PlaygroundProps {
   exercise: Exercise | null;
@@ -134,13 +135,11 @@ export function Playground({
 
           <div className="editor-section" style={{ height: editorHeight }}>
             <h3>Tu Solucion</h3>
-            <textarea
-              className="code-editor"
+            <CodeEditor
               value={userCode}
-              onChange={(e) => onCodeChange(e.target.value)}
+              onChange={onCodeChange}
               placeholder="Escribe tu solucion en JavaScript aqui..."
-              spellCheck={false}
-              style={{ height: editorHeight - 40 }}
+              height={editorHeight - 40}
             />
           </div>
         </div>

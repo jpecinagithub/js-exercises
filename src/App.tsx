@@ -3,6 +3,7 @@ import { Sidebar } from './components/Sidebar';
 import { Playground } from './components/Playground';
 import { CorrectionPanel } from './components/CorrectionPanel';
 import { SettingsModal } from './components/SettingsModal';
+import { Chatbot } from './components/Chatbot';
 import { generateExercise, correctSolution } from './lib/gemini';
 import { Topic, Difficulty, Exercise, CorrectionResult } from './types';
 
@@ -121,6 +122,8 @@ export default function App() {
         onClear={handleClearApiKey}
         onClose={() => setSettingsOpen(false)}
       />
+
+      <Chatbot />
     </div>
   );
 }

@@ -158,3 +158,48 @@ function cleanJsonString(text: string): string {
   
   return cleaned.trim();
 }
+
+interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export async function callGeminiChat(
+  apiKey: string, 
+  question: string, 
+  history: ChatMessage[] = []
+): Promise<string> {
+  const url = `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+  const systemPrompt = `Eres un asistente de programacion JavaScript experto. Responde de manera clara y concisa a preguntas sobre JavaScript. Incluye ejemplos de codigo cuando sea relevante. Usa markdown para formatear tu respuesta.`;
+
+  const contents = [
+    { role: 'user', parts: [{ text: systemPrompt }] },
+    ...history.map(msg => ({
+      role: msg.role,
+      parts: [{ text: msg.content }]
+    })),
+    { role: 'user', parts: [{ text: question }] }
+  ];
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ contents }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error?.message || `API error: ${response.status}`);
+  }
+
+  const data = await response.json();
+  
+  if (!data.candidates || data.candidates.length === 0) {
+    throw new Error('No response from Gemini API');
+  }
+
+  return data.candidates[0].content.parts[0].text;
+}
