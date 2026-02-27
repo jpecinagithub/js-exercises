@@ -8,9 +8,10 @@ import { generateExercise, correctSolution } from './lib/gemini';
 import { Topic, Difficulty, Exercise, CorrectionResult } from './types';
 
 const STORAGE_KEY = 'gemini_api_key';
+const ENV_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
 
 export default function App() {
-  const [apiKey, setApiKey] = useState('');
+  const [apiKey, setApiKey] = useState(ENV_API_KEY);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState<Topic>('Arrays');
   const [difficulty, setDifficulty] = useState<Difficulty>('easy');
@@ -22,12 +23,18 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const storedKey = localStorage.getItem(STORAGE_KEY);
-    if (storedKey) {
-      setApiKey(storedKey);
+    if (ENV_API_KEY) {
+      setApiKey(ENV_API_KEY);
+      localStorage.setItem(STORAGE_KEY, ENV_API_KEY);
       setSettingsOpen(false);
     } else {
-      setSettingsOpen(true);
+      const storedKey = localStorage.getItem(STORAGE_KEY);
+      if (storedKey) {
+        setApiKey(storedKey);
+        setSettingsOpen(false);
+      } else {
+        setSettingsOpen(true);
+      }
     }
   }, []);
 
